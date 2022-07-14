@@ -18,7 +18,6 @@ public class EmployeeRepositoryTests {
     @Test
     @DisplayName("jUnit test for save employee operation")
     public void givenEmployeeObject_whenSave_thenReturnSavedEmployee() {
-
         // given - precondition or setup
         Employee employee = Employee.builder()
                 .firstName("yuta")
@@ -37,7 +36,6 @@ public class EmployeeRepositoryTests {
     @Test
     @DisplayName("jUnit test for get all employee operation")
     public void givenEmployeeList_whenFindAll_thenEmployeeList() {
-
         // given - precondition or setup
         Employee employee1 = Employee.builder()
                 .firstName("yuta")
@@ -60,5 +58,24 @@ public class EmployeeRepositoryTests {
         // then - verify the output
         Assertions.assertThat(employeeList).isNotNull();
         Assertions.assertThat(employeeList.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("junit test for get employee by id operation")
+    public void givenEmployeeObject_whenFindById_thenReturnEmployeeObject() {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("yuta")
+                .lastName("sugiyama")
+                .email("hoge@gmail.com")
+                .build();
+
+        employeeRepository.save(employee);
+
+        // when - action or the behaviour that we are going test
+        Employee employeeDb = employeeRepository.findById(employee.getId()).get();
+
+        // then - verify the output
+        Assertions.assertThat(employeeDb).isNotNull();
     }
 }
