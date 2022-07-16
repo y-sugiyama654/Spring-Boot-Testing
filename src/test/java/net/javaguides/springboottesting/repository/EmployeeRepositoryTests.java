@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 public class EmployeeRepositoryTests {
@@ -100,7 +101,7 @@ public class EmployeeRepositoryTests {
 
     @Test
     @DisplayName("jUnit test for update employee operation")
-    public void given_when_then() {
+    public void givenEmployeeObject_whenUpdateEmployee_thenReturnUpdatedEmployee() {
         // given - precondition or setup
         Employee employee = Employee.builder()
                 .firstName("yuta")
@@ -119,5 +120,26 @@ public class EmployeeRepositoryTests {
         // then - verify the output
         Assertions.assertThat(updatedEmployee.getEmail()).isEqualTo("fuga@gmail.com");
         Assertions.assertThat(updatedEmployee.getFirstName()).isEqualTo("suzukin");
+    }
+
+    @Test
+    @DisplayName("jUnit test for delete employee operation")
+    public void givenEmployeeObject_whenDelete_thenRemoveEmployee() {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("yuta")
+                .lastName("sugiyama")
+                .email("hoge@gmail.com")
+                .build();
+
+        employeeRepository.save(employee);
+
+        // when - action or the behaviour that we are going test
+        // employeeRepository.delete(employee);
+        employeeRepository.deleteById(employee.getId());
+        Optional<Employee> deletedEmployee = employeeRepository.findById(employee.getId());
+
+        // then - verify the output
+        Assertions.assertThat(deletedEmployee).isEmpty();
     }
 }
