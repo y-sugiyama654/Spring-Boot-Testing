@@ -119,7 +119,7 @@ public class EmployeeRepositoryTests {
 
         // then - verify the output
         Assertions.assertThat(updatedEmployee.getEmail()).isEqualTo("fuga@gmail.com");
-        Assertions.assertThat(updatedEmployee.getFirstName()).isEqualTo("suzukin");
+        Assertions.assertThat(updatedEmployee.getFirstName()).isEqualTo("suzuki");
     }
 
     @Test
@@ -163,6 +163,29 @@ public class EmployeeRepositoryTests {
         // then - verify the output
         Assertions.assertThat(findEmployee).isNotNull();
         Assertions.assertThat(findEmployee.getFirstName()).isEqualTo("yuta");
-        Assertions.assertThat(findEmployee.getFirstName()).isEqualTo("sugiyama");
+        Assertions.assertThat(findEmployee.getLastName()).isEqualTo("sugiyama");
+    }
+
+    @Test
+    @DisplayName("jUnit test for custom query using JPQL with named params")
+    public void givenFirstNameAndLastName_whenFindByJPQLNamedParams_thenReturnEmployee() {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("yuta")
+                .lastName("sugiyama")
+                .email("hoge@gmail.com")
+                .build();
+
+        employeeRepository.save(employee);
+        String firstName = "yuta";
+        String lastName = "sugiyama";
+
+        // when - action or the behaviour that we are going test
+        Employee findEmployee = employeeRepository.findByJPQLNamedParams(firstName, lastName);
+
+        // then - verify the output
+        Assertions.assertThat(findEmployee).isNotNull();
+        Assertions.assertThat(findEmployee.getFirstName()).isEqualTo("yuta");
+        Assertions.assertThat(findEmployee.getLastName()).isEqualTo("sugiyama");
     }
 }
