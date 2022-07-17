@@ -1,5 +1,6 @@
 package net.javaguides.springboottesting.service.impl;
 
+import lombok.AllArgsConstructor;
 import net.javaguides.springboottesting.exception.ResourceNotFoundException;
 import net.javaguides.springboottesting.model.Employee;
 import net.javaguides.springboottesting.repository.EmployeeRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
