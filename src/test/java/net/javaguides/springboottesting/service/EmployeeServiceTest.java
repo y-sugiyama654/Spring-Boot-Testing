@@ -4,11 +4,12 @@ import net.javaguides.springboottesting.exception.ResourceNotFoundException;
 import net.javaguides.springboottesting.model.Employee;
 import net.javaguides.springboottesting.repository.EmployeeRepository;
 import net.javaguides.springboottesting.service.impl.EmployeeServiceImpl;
-import org.assertj.core.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +59,7 @@ public class EmployeeServiceTest {
         Employee savedEmployee = employeeService.saveEmployee(employee);
 
         // then - verify the output
-        Assertions.assertThat(savedEmployee).isNotNull();
+        assertThat(savedEmployee).isNotNull();
     }
 
     @Test
@@ -74,5 +76,26 @@ public class EmployeeServiceTest {
 
         // then - verify the output
         verify(employeeRepository, never()).save(any(Employee.class));
+    }
+
+    @Test
+    @DisplayName("jUnit test for getAllEmployees method")
+    public void givenEmployeesList_whenGetAllEmployees_thenReturnEmployeesList() {
+        // given - precondition or setup
+        Employee employeeAnother = Employee.builder()
+                .id(2L)
+                .firstName("fumio")
+                .lastName("kishida")
+                .email("fuga@gmail.com")
+                .build();
+        given(employeeRepository.findAll()).willReturn(List.of(employee, employeeAnother));
+
+        // when - action or the behaviour that we are going test
+        List<Employee> employeeList = employeeService.getAllEmployee();
+
+        // then - verify the output
+        assertThat(employeeList).isNotNull();
+        assertThat(employeeList.size()).isEqualTo(2);
+
     }
 }
