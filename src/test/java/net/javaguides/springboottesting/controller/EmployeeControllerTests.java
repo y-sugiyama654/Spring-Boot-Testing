@@ -82,7 +82,7 @@ public class EmployeeControllerTests {
     }
 
     @Test
-    @DisplayName("jUnit test for getEmployeeById REST API")
+    @DisplayName("jUnit test for getEmployeeById REST API(Positive Scenario)")
     public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployeeObject() throws Exception {
         // given - precondition or setup
         long employeeId = 1L;
@@ -102,5 +102,19 @@ public class EmployeeControllerTests {
                 .andExpect(jsonPath("$.firstName", is(employee.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(employee.getLastName())))
                 .andExpect(jsonPath("$.email", is(employee.getEmail())));
+    }
+
+    @Test
+    @DisplayName("jUnit test for getEmployeeById REST API(Negative Scenario)")
+    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmpty() throws Exception {
+        // given - precondition or setup
+        long employeeId = 1L;
+        given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.empty());
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(get("/api/employee/{id}", employeeId));
+
+        // then - verify the output
+        response.andExpect(status().isNotFound());
     }
 }
