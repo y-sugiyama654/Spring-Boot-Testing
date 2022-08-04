@@ -21,8 +21,7 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -123,6 +122,56 @@ public class EmployeeControllerIntegrationTest {
 
         // when - action or the behaviour that we are going test
         ResultActions response = mockMvc.perform(get("/api/employee/{id}", employeeId));
+
+        // then - verify the output
+        response.andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("jUnit test for updateEmployee REST API")
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturnUpdatedEmployeeObject() throws Exception {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("yuta")
+                .lastName("sugiyama")
+                .email("hoge@gmail.com")
+                .build();
+        employeeRepository.save(employee);
+
+        Employee updatedEmployee = Employee.builder()
+                .firstName("fumio")
+                .lastName("kishida")
+                .email("fuga@gmail.com")
+                .build();
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(put("/api/employee/{id}", employee.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedEmployee)));
+
+        // then - verify the output
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.firstName", is(updatedEmployee.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(updatedEmployee.getLastName())))
+                .andExpect(jsonPath("$.email", is(updatedEmployee.getEmail())));
+    }
+
+    @Test
+    @DisplayName("jUnit test for updateEmployee REST API(Negative Scenario)")
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturnEmpty() throws Exception {
+        // given - precondition or setup
+        long employeeId = 1L;
+        Employee updatedEmployee = Employee.builder()
+                .firstName("fumio")
+                .lastName("kishida")
+                .email("fuga@gmail.com")
+                .build();
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(put("/api/employee/{id}", employeeId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedEmployee)));
 
         // then - verify the output
         response.andExpect(status().isNotFound());
