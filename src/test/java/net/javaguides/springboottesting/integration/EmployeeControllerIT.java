@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -28,14 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@Testcontainers
-public class EmployeeControllerIT {
-
-    @Container
-    private static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest")
-            .withUsername("username")
-            .withPassword("password")
-            .withDatabaseName("ems");
+public class EmployeeControllerIT extends AbstractionBaseTest {
 
     // Injecting MockMvc class to make HTTP request using perform() method
     @Autowired
@@ -55,11 +50,6 @@ public class EmployeeControllerIT {
     @Test
     @DisplayName("jUnit test for saveEmployee REST API")
     public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception {
-
-        System.out.println(mySQLContainer.getUsername());
-        System.out.println(mySQLContainer.getPassword());
-        System.out.println(mySQLContainer.getDatabaseName());
-
         // given - precondition or setup
         Employee employee = Employee.builder()
                 .firstName("yuta")
